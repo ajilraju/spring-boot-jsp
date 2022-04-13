@@ -1,3 +1,3 @@
 # spring-boot-jsp
-Spring Boot Web application for demo purpose.
+Spring Boot Web application for demo.
 
