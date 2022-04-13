@@ -21,7 +21,7 @@ pipeline {
                 sh 'mvn package'
             }
         }
-        stage('Deploy') {
+        stage('Deploy to stage') {
             steps {
                 sh '''
                     version=$(perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml)
