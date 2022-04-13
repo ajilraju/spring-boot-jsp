@@ -1,2 +1,2 @@
 # spring-boot-jsp
-Demo Spring Boot Web application
+Spring Boot Web application
