@@ -1,3 +1,3 @@
 # spring-boot-jsp
-Spring Boot Web application.
+Spring Boot Web application for demo
 
