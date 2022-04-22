@@ -47,7 +47,7 @@ pipeline {
                         returnStdout: true
                     )
                     sh '''
-                    ssh deployer@3.142.145.171 "sudo ~/deploy.sh ${APP_VERSION}"
+                        ssh -o StrictHostKeyChecking=no deployer@3.142.145.171 "sudo ~/deploy.sh ${APP_VERSION}"
                     '''
                 }
             }
