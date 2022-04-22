@@ -4,10 +4,6 @@ pipeline {
     tools {
         maven '3.8.5'
     }
-    
-    parameters {
-        string(name: 'SERVER_IP', defaultValue: '127.0.0.1', description: 'Provide production server IP Address.')
-    }
 
     stages {
         stage('Source') {
@@ -38,6 +34,21 @@ pipeline {
                         s3Upload(file:"target/news-${APP_VERSION.trim()}.jar", bucket:'keyshell-artifactory', path:'spring-news-app/')
                     }
                     
+                }
+            }
+        }
+        stage('Deploying Artifcats') {
+            steps {
+                script {
+                    env.APP_VERSION = sh(
+                        script: '''
+                            perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml
+                        ''',
+                        returnStdout: true
+                    )
+                    sh '''
+                    ssh deployer@3.142.145.171 "sudo ~/deploy.sh ${APP_VERSION}"
+                    '''
                 }
             }
         }
