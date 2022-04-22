@@ -25,12 +25,20 @@ pipeline {
                 sh 'mvn package'
             }
         }
-        stage('Copying Artifcats') {
+        stage('Publishing Artifcats') {
             steps {
-                sh '''
-                    version=$(perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml)
-                    rsync -avzP target/news-${version}.jar root@${SERVER_IP}:/opt/
-                '''
+                withAWS(profile:'default') {
+                    script {
+                        env.APP_VERSION = sh(
+                            script: '''
+                                perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml
+                            ''',
+                            returnStdout: true
+                        )
+                        s3Upload(file:"target/news-${APP_VERSION.trim()}.jar", bucket:'keyshell-artifactory', path:'spring-news-app/')
+                    }
+                    
+                }
             }
         }
     }
