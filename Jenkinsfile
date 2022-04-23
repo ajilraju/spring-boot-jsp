@@ -5,6 +5,15 @@ pipeline {
         maven '3.8.5'
     }
 
+    environment {
+        APP_VERSION = sh(
+                    script: '''
+                            perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml
+                        ''',
+                        returnStdout: true
+                    ).trim()
+    }
+
     stages {
         stage('Source') {
             steps {
@@ -24,32 +33,16 @@ pipeline {
         stage('Publishing Artifcats') {
             steps {
                 withAWS(profile:'default') {
-                    script {
-                        env.APP_VERSION = sh(
-                            script: '''
-                                perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml
-                            ''',
-                            returnStdout: true
-                        )
-                        s3Upload(file:"target/news-${APP_VERSION.trim()}.jar", bucket:'keyshell-artifactory', path:'spring-news-app/')
-                    }
-                    
+    
+                    s3Upload(file:"target/news-${APP_VERSION.trim()}.jar", bucket:'keyshell-artifactory', path:'spring-news-app/')
                 }
             }
         }
         stage('Deploying Artifcats') {
             steps {
-                script {
-                    env.APP_VERSION = sh(
-                        script: '''
-                            perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml
-                        ''',
-                        returnStdout: true
-                    )
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no deployer@3.142.145.171 "sudo ~/deploy.sh ${APP_VERSION}"
-                    '''
-                }
+                sh '''
+                    ssh -o StrictHostKeyChecking=no deployer@3.142.145.171 "sudo ~/deploy.sh ${APP_VERSION}"
+                '''
             }
         }
     }
