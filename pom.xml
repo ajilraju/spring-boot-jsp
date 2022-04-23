@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.contentstack.spring</groupId>
     <artifactId>news</artifactId>
-    <version>v1.0.3</version>
+    <version>v1.0.4</version>
     <name>SampleApp</name>
     <description>Example application using contentstack</description>
 
