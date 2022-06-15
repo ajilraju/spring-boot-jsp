@@ -22,10 +22,14 @@ pipeline {
             }
         }
         stage('Copying Artifcats') {
+            environment {
+                PUB_KEY = credentials('web-srv-pub')
+            }
             steps {
                 sh '''
+                    printenv
                     version=$(perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml)
-                    rsync -avzP target/news-${version}.jar root@${SERVER_IP}:/opt/
+                    rsync -avzPe target/news-${version}.jar demo@3.87.207.128:~/
                 '''
             }
         }
