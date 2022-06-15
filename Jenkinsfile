@@ -27,9 +27,8 @@ pipeline {
             }
             steps {
                 sh '''
-                    printenv
                     version=$(perl -nle 'print "$1" if /<version>(v\\d+\\.\\d+\\.\\d+)<\\/version>/' pom.xml)
-                    rsync -avzPe target/news-${version}.jar demo@3.87.207.128:~/
+                    rsync -avzPe 'ssh -i $PUB_KEY' target/news-${version}.jar demo@3.87.207.128:~/
                 '''
             }
         }
