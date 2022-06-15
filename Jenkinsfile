@@ -2,17 +2,13 @@ pipeline {
     agent any
 
     tools {
-        maven '3.8.5'
-    }
-    
-    parameters {
-        string(name: 'SERVER_IP', defaultValue: '127.0.0.1', description: 'Provide production server IP Address.')
+        maven 'mvn-3.8.5'
     }
 
     stages {
         stage('Source') {
             steps {
-                git branch: 'main', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/ajilraju/spring-boot-jsp.git'
+                git branch: 'batch-3', changelog: false, credentialsId: 'github-user-pass', poll: false, url: 'https://github.com/ajilraju/spring-boot-jsp.git'
             }
         }
         stage('Test') {
